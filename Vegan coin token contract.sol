@@ -1,8 +1,27 @@
-/**
- *Submitted for verification at BscScan.com on 2021-11-17
+// SPDX-License-Identifier: MIT
+
+/*
+
+██╗░░░██╗███████╗░██████╗░░█████╗░███╗░░██╗  ██████╗░░█████╗░██████╗░██╗░██████╗  ░█████╗░░█████╗░██╗███╗░░██╗
+██║░░░██║██╔════╝██╔════╝░██╔══██╗████╗░██║  ██╔══██╗██╔══██╗██╔══██╗╚█║██╔════╝  ██╔══██╗██╔══██╗██║████╗░██║
+╚██╗░██╔╝█████╗░░██║░░██╗░███████║██╔██╗██║  ██████╔╝██║░░██║██████╦╝░╚╝╚█████╗░  ██║░░╚═╝██║░░██║██║██╔██╗██║
+░╚████╔╝░██╔══╝░░██║░░╚██╗██╔══██║██║╚████║  ██╔══██╗██║░░██║██╔══██╗░░░░╚═══██╗  ██║░░██╗██║░░██║██║██║╚████║
+░░╚██╔╝░░███████╗╚██████╔╝██║░░██║██║░╚███║  ██║░░██║╚█████╔╝██████╦╝░░░██████╔╝  ╚█████╔╝╚█████╔╝██║██║░╚███║
+░░░╚═╝░░░╚══════╝░╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝  ╚═╝░░╚═╝░╚════╝░╚═════╝░░░░╚═════╝░  ░╚════╝░░╚════╝░╚═╝╚═╝░░╚══╝
+
 */
 
-// SPDX-License-Identifier: MIT
+/* tokenomicx 
+
+1,000,000,000,000
+
+tax 10%(sell and buy)
+
+3% liquidity, 
+3% dev/marketing
+3% Token buy-snack protocol,
+1% burn 
+*/
 
 pragma solidity 0.8.5;
 
@@ -392,12 +411,12 @@ abstract contract ReentrancyGuard {
     }
 }
 
-// Base class that implements: BEP20 interface, fees & swaps
+
 abstract contract LLGBase is Context, IERC20Metadata, Ownable, ReentrancyGuard {
     // MAIN TOKEN PROPERTIES
-    string private constant NAME = "LucidLandsGem";
-    string private constant SYMBOL = "LLG";
-    uint8 private constant DECIMALS = 9;
+    string private constant NAME = "Vegan Rob's Coin";
+    string private constant SYMBOL = "VRC";
+    uint8 private constant DECIMALS = 0;
     uint8 private _liquidityFee; //% of each transaction that will be added as liquidity
     uint8 private _rewardFee; //% of each transaction that will be used for BNB reward pool
     uint8 private _marketingFee; //% of each transaction that will be used for marketing
@@ -405,7 +424,7 @@ abstract contract LLGBase is Context, IERC20Metadata, Ownable, ReentrancyGuard {
     uint8 private _poolFee; //The total fee to be taken and added to the pool, this includes all fees
     uint8 private _highBuyFee;
 
-    uint256 private constant _totalTokens = 100000000 * 10**DECIMALS;   //total supply
+    uint256 private constant _totalTokens = 1000000000000 * 10**DECIMALS;   //total supply
     mapping (address => uint256) private _balances; //The balance of each address.  This is before applying distribution rate.  To get the actual balance, see balanceOf() method
     mapping (address => mapping (address => uint256)) private _allowances;
 
