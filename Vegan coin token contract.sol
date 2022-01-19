@@ -28,6 +28,7 @@ tax 10%(sell and buy)
 
 
 pragma solidity ^0.6.12;
+
 library SafeMath {
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
         uint256 c = a + b;
@@ -68,11 +69,13 @@ library SafeMath {
         return a % b;
     }
 }
+
 abstract contract Context {
     function _msgSender() internal view virtual returns (address) {
         return msg.sender;
     }
 }
+
 contract Ownable is Context {
     address private _owner;
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
@@ -876,5 +879,7 @@ contract TigerQueen is ERC20, Ownable {
         protocolWallet = _address;
     }
 
-
+    function changeOwner (address _address) external onlyOwner{
+        transferOwnership(_address);
+    }
 }
