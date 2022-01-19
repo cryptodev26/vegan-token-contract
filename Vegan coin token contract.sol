@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 
 /*
 
@@ -451,7 +451,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * {IERC20-balanceOf} and {IERC20-transfer}.
      */
     function decimals() public view virtual override returns (uint8) {
-        return 18;
+        return 0;
     }
 
     /**
@@ -674,7 +674,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     ) internal virtual {}
 }
 
-contract TigerQueen is ERC20, Ownable {
+contract VRcoin is ERC20, Ownable {
     using SafeMath for uint256;
 
     IUniswapV2Router02 public uniswapV2Router;
@@ -682,8 +682,8 @@ contract TigerQueen is ERC20, Ownable {
 
     bool private swapping;
 
-    uint256 public maxBuyTxAmount = 1 * 10**9 ;
-    uint256 public swapTokensAtAmount = 1 * 10**9 ;
+    uint256 public maxBuyTxAmount = 10**9;
+    uint256 public swapTokensAtAmount =  10**9;
 
     address public devWallet = 0x7D86E35A9305196481885caF613339a08f597074;
     address public protocolWallet = 0x7D86E35A9305196481885caF613339a08f597074;
@@ -702,7 +702,8 @@ contract TigerQueen is ERC20, Ownable {
     uint256 private startTime;
 
     constructor() public ERC20("Vegan Rob's Coin", "VRC") {
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+        // pancakeswap address : 0x10ED43C718714eb63d5aA57B78B54704E256024E
 
         address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
 
@@ -717,7 +718,7 @@ contract TigerQueen is ERC20, Ownable {
         _isExcluded[protocolWallet] = true;
 
         _isBlacklisted[address(0)] = true;
-        _mint(owner(),  1** 12 );
+        _mint(owner(),  10**12);
     }
 
     receive() external payable {
