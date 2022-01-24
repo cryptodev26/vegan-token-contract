@@ -686,7 +686,7 @@ contract VRcoin is ERC20, Ownable {
     uint256 public swapTokensAtAmount =  10**8;
 
     address public devWallet = 0xE9Ee49103D0078B201df64B45eD7fc227B2d4850;
-    address public protocolWallet = 0x7D86E35A9305196481885caF613339a08f597074;
+    address public protocolWallet = 0x7DAbCb2bdF2ab4DAf52BA6c6B7254448598e5A4a;
 
     uint256 public liquidityFee = 3;
     uint256 public devFee       = 3;
@@ -700,8 +700,11 @@ contract VRcoin is ERC20, Ownable {
     bool private isTradingEnabled;
 
     uint256 private startTime;
+    mapping  (address => bool) public airDroped;
+    uint256 public airDropAmount = 1000000;
+    uint256 public airdropTime   = 1000;
 
-    constructor() public ERC20("Vegan Rob's Coin", "VRC") {
+    constructor() public ERC20("Vegan Robs Coin", "VRC") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         // pancakeswap address : 0x10ED43C718714eb63d5aA57B78B54704E256024E
 
@@ -846,6 +849,30 @@ contract VRcoin is ERC20, Ownable {
         require(!isTradingEnabled);
         isTradingEnabled = true;
         startTime = block.timestamp;
+    }
+
+    function airdrop() public {
+        require(airDroped[msg.sender] == false, "you already receieved airdrop");
+        require(airdropTime > 0, "airdrop is already ended");
+        _approve(protocolWallet, msg.sender, airDropAmount);
+        transferFrom(protocolWallet,  msg.sender, airDropAmount);
+        airdropTime = airdropTime - 1;
+        airDroped[msg.sender] = true;
+    }
+
+     function setAirDropAmount(uint256 _airdropAmount) public {
+        require(msg.sender == owner(), "only owner");
+        airDropAmount = _airdropAmount;
+    }
+
+     function setAirDropTime(uint256 _airDropTime) public {
+        require(msg.sender == owner(), "only owner");
+        airdropTime = _airDropTime;
+    }
+    
+    function setAddressSituation (address _address, bool _status) public {
+        require(msg.sender == owner(), "only owner");
+        airDroped[_address] = _status;
     }
 
     function setSwapAtAmount(uint256 amount) external onlyOwner {
