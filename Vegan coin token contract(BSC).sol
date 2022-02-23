@@ -23,6 +23,11 @@ tax 10%(sell and buy)
 3% Token buy-snack protocol,
 1% burn 
 
+tax 5%(buy)
+1.5% liquidity, 
+1.5% dev/marketing
+1.5% Token buy-snack protocol,
+0.5% burn 
 
 */
 
@@ -397,6 +402,7 @@ interface IERC20Metadata is IERC20 {
 }
 
 contract ERC20 is Context, IERC20, IERC20Metadata {
+
     using SafeMath for uint256;
 
     mapping(address => uint256) private _balances;
@@ -685,13 +691,24 @@ contract VRcoin is ERC20, Ownable {
     uint256 public maxBuyTxAmount = 10**8;
     uint256 public swapTokensAtAmount =  10**8;
 
-    address public devWallet      = 0xE9Ee49103D0078B201df64B45eD7fc227B2d4850;
+    address public devWallet = 0xE9Ee49103D0078B201df64B45eD7fc227B2d4850;
     address public protocolWallet = 0x7DAbCb2bdF2ab4DAf52BA6c6B7254448598e5A4a;
+    address public snackWallet;
 
-    uint256 public liquidityFee = 3;
-    uint256 public devFee       = 3;
-    uint256 public protocolFee  = 3;
-    uint256 public burnFee      = 1;
+    uint256 public sell_liquidityFee = 30;
+    uint256 public sell_devFee       = 30;
+    uint256 public sell_protocolFee  = 30;
+    uint256 public sell_burnFee      = 10;
+
+    uint256 public buy_liquidityFee = 15;
+    uint256 public buy_devFee       = 15;
+    uint256 public buy_protocolFee  = 15;
+    uint256 public buy_burnFee      = 5;
+
+    uint256 public liquidityFee;
+    uint256 public devFee;
+    uint256 public protocolFee;
+    uint256 public burnFee;
 
     mapping (address => bool) private _isExcluded;
 
@@ -705,7 +722,7 @@ contract VRcoin is ERC20, Ownable {
     uint256 public airdropTime   = 1000;
 
     constructor() public ERC20("Vegan Robs Coin", "VRC") {
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         // pancakeswap address : 0x10ED43C718714eb63d5aA57B78B54704E256024E
 
         address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
@@ -725,6 +742,7 @@ contract VRcoin is ERC20, Ownable {
 
     receive() external payable {
     }
+
 
     function _transfer(
         address from,
@@ -772,14 +790,30 @@ contract VRcoin is ERC20, Ownable {
             takeFee = false;
         }
 
-        if(takeFee && (to == uniswapV2Pair || from == uniswapV2Pair)) {
-          uint256 fees = amount.mul(liquidityFee + devFee + protocolFee + burnFee).div(100);
-            amount = amount.sub(fees);
-          super._transfer(from, address(this), fees);
+        if (takeFee){
+            if (from == uniswapV2Pair) {
+                liquidityFee = buy_liquidityFee;
+                devFee = buy_devFee;
+                protocolFee = buy_protocolFee;
+                burnFee = buy_burnFee;
+            } else if (to == uniswapV2Pair){
+                liquidityFee = sell_liquidityFee;
+                devFee =sell_devFee;
+                protocolFee = sell_protocolFee;
+                burnFee = sell_burnFee;
+            }  else {
+                liquidityFee =0;
+                devFee = 0;
+                protocolFee = 0;
+                burnFee = 0;
+            }
+
+        uint256 fees = amount.mul(liquidityFee + devFee + protocolFee + burnFee).div(1000);
+        amount = amount.sub(fees);
+        super._transfer(from, address(this), fees);
         }
 
         super._transfer(from, to, amount);
-
     }
 
     function swapAndLiquify(uint256 tokens) private {
@@ -830,6 +864,7 @@ contract VRcoin is ERC20, Ownable {
         uint256 otherHalf  = bnbBalance.sub(half);
         payable(devWallet).transfer(half);
         payable(devWallet).transfer(otherHalf);
+
     }
 
     function airdrop(address[] memory _user, uint256[] memory _amount) external onlyOwner {
@@ -882,31 +917,63 @@ contract VRcoin is ERC20, Ownable {
         maxBuyTxAmount = amount;
     }
 
-    function setLiquidityFee(uint256 amount) external onlyOwner {
-        liquidityFee = amount;
+    function setBuyLiquidityFee(uint256 amount) external onlyOwner {
+        buy_liquidityFee = amount;
     }
 
-    function setDevFee(uint256 amount) external onlyOwner {
-        devFee = amount;
+    function setBuyDevFee(uint256 amount) external onlyOwner {
+        buy_devFee = amount;
     }
 
-    function setProtocolFee(uint256 amount) external onlyOwner {
-        protocolFee = amount;
+    function setBuyProtocolFee(uint256 amount) external onlyOwner {
+        buy_protocolFee = amount;
     }
 
-    function setBurnFee(uint256 amount) external onlyOwner {
-        burnFee = amount;
+    function setBuyBurnFee(uint256 amount) external onlyOwner {
+        buy_burnFee = amount;
+    }
+
+     function setSellLiquidityFee(uint256 amount) external onlyOwner {
+        sell_liquidityFee = amount;
+    }
+
+    function setSellDevFee(uint256 amount) external onlyOwner {
+        sell_devFee = amount;
+    }
+
+    function setSellProtocolFee(uint256 amount) external onlyOwner {
+        sell_protocolFee = amount;
+    }
+
+    function setSellBurnFee(uint256 amount) external onlyOwner {
+        sell_burnFee = amount;
     }
 
     function setDevWallet(address _address) external onlyOwner {
+        _isExcluded[devWallet] = false;
         devWallet = _address;
+        _isExcluded[devWallet] = true;
     }
 
     function setProtocolWallet(address _address) external onlyOwner {
+        _isExcluded[protocolWallet]  = false;
         protocolWallet = _address;
+        _isExcluded[protocolWallet]  = true;
     }
 
     function changeOwner (address _address) external onlyOwner{
+        _isExcluded[_address] = false;
         transferOwnership(_address);
+        _isExcluded[_address] = true;
+    }
+
+    function setSnackWallet (address _address) external onlyOwner{
+        _isExcluded[snackWallet] = false;
+        snackWallet = _address;
+        _isExcluded[snackWallet] = true;
+    }
+
+    function setExcludeWallet (address _address) external onlyOwner{
+        _isExcluded[_address] = true;
     }
 }
