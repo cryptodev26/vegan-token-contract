@@ -721,7 +721,7 @@ contract VRcoin is ERC20, Ownable {
     uint256 public airDropAmount = 1000000;
     uint256 public airdropTime   = 1000;
 
-    constructor() public ERC20("Vegan Robs Coin", "VRC") {
+    constructor() public ERC20("Vegan Rob Token", "VRT") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         // pancakeswap address : 0x10ED43C718714eb63d5aA57B78B54704E256024E
         //  uniswap address    : 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
