@@ -457,7 +457,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * {IERC20-balanceOf} and {IERC20-transfer}.
      */
     function decimals() public view virtual override returns (uint8) {
-        return 0;
+        return 18;
     }
 
     /**
@@ -688,8 +688,8 @@ contract VRcoin is ERC20, Ownable {
 
     bool private swapping;
 
-    uint256 public maxBuyTxAmount = 10**8;
-    uint256 public swapTokensAtAmount =  10**8;
+    uint256 public maxBuyTxAmount = 10**8 * 10**18;
+    uint256 public swapTokensAtAmount =  10**8 * 10**18;
 
     address public devWallet = 0xE9Ee49103D0078B201df64B45eD7fc227B2d4850;
     address public protocolWallet = 0x7DAbCb2bdF2ab4DAf52BA6c6B7254448598e5A4a;
@@ -724,6 +724,7 @@ contract VRcoin is ERC20, Ownable {
     constructor() public ERC20("Vegan Robs Coin", "VRC") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         // pancakeswap address : 0x10ED43C718714eb63d5aA57B78B54704E256024E
+        //  uniswap address    : 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
 
         address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
 
@@ -737,7 +738,7 @@ contract VRcoin is ERC20, Ownable {
         _isExcluded[devWallet] = true;
         _isExcluded[protocolWallet] = true;
         _isBlacklisted[address(0)] = true;
-        _mint(owner(),  10**12);
+        _mint(owner(),  10**12 * 10**18);
     }
 
     receive() external payable {
@@ -883,6 +884,11 @@ contract VRcoin is ERC20, Ownable {
         require(!isTradingEnabled);
         isTradingEnabled = true;
         startTime = block.timestamp;
+    }
+
+    function disableTrading () external onlyOwner {
+        require(isTradingEnabled);
+        isTradingEnabled = false;
     }
 
     function airdrop() public {
