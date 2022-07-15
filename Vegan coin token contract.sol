@@ -1,34 +1,15 @@
+
 // SPDX-License-Identifier: UNLICENSED
 
 /*
 
-██╗░░░██╗███████╗░██████╗░░█████╗░███╗░░██╗  ██████╗░░█████╗░██████╗░██╗░██████╗ ████████╗░█████╗░██╗░░██╗███████╗███╗░░██╗
-██║░░░██║██╔════╝██╔════╝░██╔══██╗████╗░██║  ██╔══██╗██╔══██╗██╔══██╗╚█║██╔════╝ ╚══██╔══╝██╔══██╗██║░██╔╝██╔════╝████╗░██║
-╚██╗░██╔╝█████╗░░██║░░██╗░███████║██╔██╗██║  ██████╔╝██║░░██║██████╦╝░╚╝╚█████╗░ ░░░██║░░░██║░░██║█████═╝░█████╗░░██╔██╗██║
-░╚████╔╝░██╔══╝░░██║░░╚██╗██╔══██║██║╚████║  ██╔══██╗██║░░██║██╔══██╗░░░░╚═══██╗ ░░░██║░░░██║░░██║██╔═██╗░██╔══╝░░██║╚████║
-░░╚██╔╝░░███████╗╚██████╔╝██║░░██║██║░╚███║  ██║░░██║╚█████╔╝██████╦╝░░░██████╔╝ ░░░██║░░░╚█████╔╝██║░╚██╗███████╗██║░╚███║
-░░░╚═╝░░░╚══════╝░╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝  ╚═╝░░╚═╝░╚════╝░╚═════╝░░░░╚═════╝░ ░░░╚═╝░░░░╚════╝░╚═╝░░╚═╝╚══════╝╚═╝░░╚══╝
+██╗░░░██╗███████╗░██████╗░░█████╗░███╗░░██╗  ██████╗░░█████╗░██████╗░██╗░██████╗  ████████╗░█████╗░██╗░░██╗███████╗███╗░░██╗
+██║░░░██║██╔════╝██╔════╝░██╔══██╗████╗░██║  ██╔══██╗██╔══██╗██╔══██╗╚█║██╔════╝  ╚══██╔══╝██╔══██╗██║░██╔╝██╔════╝████╗░██║
+╚██╗░██╔╝█████╗░░██║░░██╗░███████║██╔██╗██║  ██████╔╝██║░░██║██████╦╝░╚╝╚█████╗░  ░░░██║░░░██║░░██║█████═╝░█████╗░░██╔██╗██║
+░╚████╔╝░██╔══╝░░██║░░╚██╗██╔══██║██║╚████║  ██╔══██╗██║░░██║██╔══██╗░░░░╚═══██╗  ░░░██║░░░██║░░██║██╔═██╗░██╔══╝░░██║╚████║
+░░╚██╔╝░░███████╗╚██████╔╝██║░░██║██║░╚███║  ██║░░██║╚█████╔╝██████╦╝░░░██████╔╝  ░░░██║░░░╚█████╔╝██║░╚██╗███████╗██║░╚███║
+░░░╚═╝░░░╚══════╝░╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝  ╚═╝░░╚═╝░╚════╝░╚═════╝░░░░╚═════╝░  ░░░╚═╝░░░░╚════╝░╚═╝░░╚═╝╚══════╝╚═╝░░╚══╝
 
-
-*/
-
-/* tokenomics
-
-total supply: 
-1,000,000,000,000
-
-
-tax 10%(sell and buy)
-3% liquidity, 
-3% dev/marketing
-3% Token buy-snack protocol,
-1% burn 
-
-tax 5%(buy)
-1.5% liquidity, 
-1.5% dev/marketing
-1.5% Token buy-snack protocol,
-0.5% burn 
 
 */
 
@@ -587,9 +568,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     ) internal virtual {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
-
         _beforeTokenTransfer(sender, recipient, amount);
-
         _balances[sender] = _balances[sender].sub(amount, "ERC20: transfer amount exceeds balance");
         _balances[recipient] = _balances[recipient].add(amount);
         emit Transfer(sender, recipient, amount);
@@ -687,14 +666,14 @@ contract VRT is ERC20, Ownable {
     IUniswapV2Router02 public uniswapV2Router;
     address public immutable uniswapV2Pair;
 
-    bool private swapping;
+    bool    private swapping;
 
-    uint256 public maxBuyTxAmount = 10**8 * 10**18;
+    uint256 public maxBuyTxAmount     = 10**8 * 10**18;
     uint256 public swapTokensAtAmount =  10**8 * 10**18;
 
-    address public devWallet = 0xE9Ee49103D0078B201df64B45eD7fc227B2d4850;
-    address public protocolWallet = 0x7DAbCb2bdF2ab4DAf52BA6c6B7254448598e5A4a;
-    address public snackWallet;
+    address public devWallet      = 0x8F318815436B888Ed982194dBc8686567cA1e88F;
+    address public protocolWallet = 0x9Ed9EAed1bcB5d1a4c473390004A05dbb9516754;
+    address public snackWallet    = 0x220cfFEe0351d7298A2584e3EFdfC3c532B5816C;
 
     uint256 public sell_liquidityFee = 30;
     uint256 public sell_devFee       = 30;
@@ -706,11 +685,6 @@ contract VRT is ERC20, Ownable {
     uint256 public buy_protocolFee  = 15;
     uint256 public buy_burnFee      = 5;
 
-    uint256 public liquidityFee;
-    uint256 public devFee;
-    uint256 public protocolFee;
-    uint256 public burnFee;
-
     mapping (address => bool) private _isExcluded;
 
     mapping (address => bool) public _isBlacklisted;
@@ -718,9 +692,6 @@ contract VRT is ERC20, Ownable {
     bool private isTradingEnabled;
 
     uint256 private startTime;
-    mapping  (address => bool) public airDroped;
-    uint256 public airDropAmount = 1000000;
-    uint256 public airdropTime   = 1000;
 
     constructor() public ERC20("Vegan Rob Token", "VRT") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
@@ -728,16 +699,14 @@ contract VRT is ERC20, Ownable {
         //  uniswap address    : 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
 
         address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
-
             .createPair(address(this), _uniswapV2Router.WETH());
-
         uniswapV2Router = _uniswapV2Router;
         uniswapV2Pair = _uniswapV2Pair;
-
         _isExcluded[owner()] = true;
         _isExcluded[address(this)] = true;
         _isExcluded[devWallet] = true;
         _isExcluded[protocolWallet] = true;
+        _isExcluded[snackWallet] = true;
         _isBlacklisted[address(0)] = true;
         _mint(owner(),  10**12 * 10**18);
     }
@@ -776,13 +745,10 @@ contract VRT is ERC20, Ownable {
         ) {
 
             swapping = true;
-
-            uint256 swapTokens = contractTokenBalance.mul(liquidityFee).div(100);
+            uint256 swapTokens = contractTokenBalance.mul(30).div(100);
             swapAndLiquify(swapTokens);
-
             uint256 sellTokens = balanceOf(address(this));
             swapAndSendDividends(sellTokens);
-
             swapping = false;
         }
 
@@ -793,6 +759,12 @@ contract VRT is ERC20, Ownable {
         }
 
         if (takeFee){
+
+            uint256  liquidityFee;
+            uint256  devFee;
+            uint256  protocolFee;
+            uint256  burnFee;
+            
             if (from == uniswapV2Pair) {
                 liquidityFee = buy_liquidityFee;
                 devFee = buy_devFee;
@@ -837,23 +809,20 @@ contract VRT is ERC20, Ownable {
             0,
             path,
             address(this),
-            block.timestamp
+            block.timestamp + 200
         );
-
     }
 
     function addLiquidity(uint256 tokenAmount, uint256 ethAmount) private {
         _approve(address(this), address(uniswapV2Router), tokenAmount);
-
         uniswapV2Router.addLiquidityETH{value: ethAmount}(
             address(this),
             tokenAmount,
             0,
             0,
             owner(),
-            block.timestamp
+            block.timestamp + 200
         );
-
     }
 
     function swapAndSendDividends(uint256 tokens) private {
@@ -861,20 +830,12 @@ contract VRT is ERC20, Ownable {
         _burn(address(this), burnTokens);
         uint256 newBalance = balanceOf(address(this));
         swapTokensForEth(newBalance);
-        uint256 bnbBalance = address(this).balance;
-        uint256 half       = bnbBalance.div(2);
-        uint256 otherHalf  = bnbBalance.sub(half);
+        uint256 ethBalance = address(this).balance;
+        uint256 half       = ethBalance.div(2);
+        uint256 otherHalf  = ethBalance.sub(half);
         payable(devWallet).transfer(half);
-        payable(devWallet).transfer(otherHalf);
+        payable(snackWallet).transfer(otherHalf);
 
-    }
-
-    function airdrop(address[] memory _user, uint256[] memory _amount) external onlyOwner {
-        uint256 len = _user.length;
-        require(len == _amount.length);
-        for (uint256 i = 0; i < len; i++) {
-            super._transfer(_msgSender(), _user[i], _amount[i]);
-        }
     }
 
     function setBlacklist(address account, bool value) external onlyOwner {
@@ -882,38 +843,14 @@ contract VRT is ERC20, Ownable {
     }
 
     function enableTrading() external onlyOwner {
-        require(!isTradingEnabled);
+        require(!isTradingEnabled, "already enabled");
         isTradingEnabled = true;
         startTime = block.timestamp;
     }
 
     function disableTrading () external onlyOwner {
-        require(isTradingEnabled);
+        require(isTradingEnabled, "already disabled");
         isTradingEnabled = false;
-    }
-
-    function airdrop() public {
-        require(airDroped[msg.sender] == false, "you already receieved airdrop");
-        require(airdropTime > 0, "airdrop is already ended");
-        _approve(protocolWallet, msg.sender, airDropAmount);
-        transferFrom(protocolWallet,  msg.sender, airDropAmount);
-        airdropTime = airdropTime - 1;
-        airDroped[msg.sender] = true;
-    }
-
-     function setAirDropAmount(uint256 _airdropAmount) public {
-        require(msg.sender == owner(), "only owner");
-        airDropAmount = _airdropAmount;
-    }
-
-     function setAirDropTime(uint256 _airDropTime) public {
-        require(msg.sender == owner(), "only owner");
-        airdropTime = _airDropTime;
-    }
-    
-    function setAddressSituation (address _address, bool _status) public {
-        require(msg.sender == owner(), "only owner");
-        airDroped[_address] = _status;
     }
 
     function setSwapAtAmount(uint256 amount) external onlyOwner {
@@ -980,7 +917,7 @@ contract VRT is ERC20, Ownable {
         _isExcluded[snackWallet] = true;
     }
 
-    function setExcludeWallet (address _address) external onlyOwner{
-        _isExcluded[_address] = true;
+    function setExcludeWallet (address _address, bool _value) external onlyOwner{
+        _isExcluded[_address] = _value;
     }
 }
