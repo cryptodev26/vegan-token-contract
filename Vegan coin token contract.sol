@@ -14,7 +14,7 @@
 */
 
 
-pragma solidity ^0.6.12;
+pragma solidity ^0.8.7;
 
 library SafeMath {
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
@@ -66,7 +66,7 @@ abstract contract Context {
 contract Ownable is Context {
     address private _owner;
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-    constructor () public {
+    constructor ()  {
         address msgSender = _msgSender();
         _owner = msgSender;
         emit OwnershipTransferred(address(0), msgSender);
@@ -405,7 +405,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor(string memory name_, string memory symbol_) public {
+    constructor(string memory name_, string memory symbol_)  {
         _name = name_;
         _symbol = symbol_;
     }
@@ -672,7 +672,6 @@ contract VRT is ERC20, Ownable {
     uint256 public swapTokensAtAmount =  10**8 * 10**18;
 
     address public devWallet      = 0x8F318815436B888Ed982194dBc8686567cA1e88F;
-    address public protocolWallet = 0x9Ed9EAed1bcB5d1a4c473390004A05dbb9516754;
     address public snackWallet    = 0x220cfFEe0351d7298A2584e3EFdfC3c532B5816C;
 
     uint256 public sell_liquidityFee = 30;
@@ -693,7 +692,7 @@ contract VRT is ERC20, Ownable {
 
     uint256 private startTime;
 
-    constructor() public ERC20("Vegan Rob Token", "VRT") {
+    constructor()  ERC20("Vegan Rob Token", "VRT") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         // pancakeswap address : 0x10ED43C718714eb63d5aA57B78B54704E256024E
         //  uniswap address    : 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
@@ -705,7 +704,6 @@ contract VRT is ERC20, Ownable {
         _isExcluded[owner()] = true;
         _isExcluded[address(this)] = true;
         _isExcluded[devWallet] = true;
-        _isExcluded[protocolWallet] = true;
         _isExcluded[snackWallet] = true;
         _isBlacklisted[address(0)] = true;
         _mint(owner(),  10**12 * 10**18);
@@ -743,10 +741,11 @@ contract VRT is ERC20, Ownable {
             from != owner() &&
             to != owner()
         ) {
-
             swapping = true;
             uint256 swapTokens = contractTokenBalance.mul(30).div(100);
             swapAndLiquify(swapTokens);
+            uint256 burnTokens = balanceOf(address(this)).div(7);
+            _burn(address(this), burnTokens);
             uint256 sellTokens = balanceOf(address(this));
             swapAndSendDividends(sellTokens);
             swapping = false;
@@ -826,16 +825,12 @@ contract VRT is ERC20, Ownable {
     }
 
     function swapAndSendDividends(uint256 tokens) private {
-        uint256 burnTokens = tokens.div(7);
-        _burn(address(this), burnTokens);
-        uint256 newBalance = balanceOf(address(this));
-        swapTokensForEth(newBalance);
+        swapTokensForEth(tokens);
         uint256 ethBalance = address(this).balance;
         uint256 half       = ethBalance.div(2);
         uint256 otherHalf  = ethBalance.sub(half);
         payable(devWallet).transfer(half);
         payable(snackWallet).transfer(otherHalf);
-
     }
 
     function setBlacklist(address account, bool value) external onlyOwner {
@@ -861,48 +856,11 @@ contract VRT is ERC20, Ownable {
         maxBuyTxAmount = amount;
     }
 
-    function setBuyLiquidityFee(uint256 amount) external onlyOwner {
-        buy_liquidityFee = amount;
-    }
-
-    function setBuyDevFee(uint256 amount) external onlyOwner {
-        buy_devFee = amount;
-    }
-
-    function setBuyProtocolFee(uint256 amount) external onlyOwner {
-        buy_protocolFee = amount;
-    }
-
-    function setBuyBurnFee(uint256 amount) external onlyOwner {
-        buy_burnFee = amount;
-    }
-
-     function setSellLiquidityFee(uint256 amount) external onlyOwner {
-        sell_liquidityFee = amount;
-    }
-
-    function setSellDevFee(uint256 amount) external onlyOwner {
-        sell_devFee = amount;
-    }
-
-    function setSellProtocolFee(uint256 amount) external onlyOwner {
-        sell_protocolFee = amount;
-    }
-
-    function setSellBurnFee(uint256 amount) external onlyOwner {
-        sell_burnFee = amount;
-    }
 
     function setDevWallet(address _address) external onlyOwner {
         _isExcluded[devWallet] = false;
         devWallet = _address;
         _isExcluded[devWallet] = true;
-    }
-
-    function setProtocolWallet(address _address) external onlyOwner {
-        _isExcluded[protocolWallet]  = false;
-        protocolWallet = _address;
-        _isExcluded[protocolWallet]  = true;
     }
 
     function changeOwner (address _address) external onlyOwner{
